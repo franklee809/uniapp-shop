@@ -1,15 +1,27 @@
 {
+  "easycom": {
+    "autoscan": true,
+    "custom": {
+      // uni-ui 规则如下配置
+      "^uni-(.*)": "@dcloudio/uni-ui/lib/uni-$1/uni-$1.vue"
+      // "^Custom-(.*)": "@/components/Custom$1.vue"
+    }
+  },
   "pages": [
     //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
     {
       "path": "pages/index/index",
       "style": {
+        "navigationStyle": "custom",
+        "navigationBarTextStyle": "white",
         "navigationBarTitleText": "首页"
       }
     },
     {
       "path": "pages/my/my",
       "style": {
+        "navigationStyle": "custom",
+        "navigationBarTextStyle": "white",
         "navigationBarTitleText": "我的"
       }
     },
@@ -29,6 +41,18 @@
       "path": "pages/login/login",
       "style": {
         "navigationBarTitleText": "登录"
+      }
+    },
+    {
+      "path": "pages/hot/index",
+      "style": {
+        "navigationBarTitleText": "hot"
+      }
+    },
+    {
+      "path": "pages/product/index",
+      "style": {
+        "navigationBarTitleText": "product"
       }
     }
   ],
@@ -70,5 +94,35 @@
         "selectedIconPath": "static/tabs/user_selected.png"
       }
     ]
+  },
+  // 分包加载规则
+  "subPackages": [
+    {
+      "root": "pagesMember",
+      "pages": [
+        {
+          "path": "settings/index",
+          "style": {
+            "navigationBarTitleText": "设置"
+          }
+        },
+        {
+          "path": "profile/index",
+          "style": {
+            "navigationBarTitleText": "Profile",
+            "navigationStyle": "custom",
+            "navigationBarTextStyle": "white"
+          }
+        }
+      ]
+    }
+  ],
+  "preloadRule": {
+    "pages/my/my": {
+      "network": "all",
+      "packages": [
+        "pagesMember"
+      ]
+    }
   }
 }
