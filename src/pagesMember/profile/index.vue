@@ -1,9 +1,49 @@
 <script lang="ts" setup>
+import { getMemberProfileAPI } from '@/services/profile'
+import { onLoad } from '@dcloudio/uni-app'
 import { ref } from 'vue'
 
 const { safeAreaInsets } = uni.getSystemInfoSync()
 
 const profile = ref()
+
+const getProfileData = async () => {
+  const res = await getMemberProfileAPI()
+  profile.value = res.result
+}
+
+onLoad(() => {
+  getProfileData()
+})
+
+const changeAvatar = () => {
+  uni.chooseMedia({
+    count: 1,
+    mediaType: ['image'],
+    success: (res) => {
+      const { tempFilePath } = res.tempFiles[0]
+
+      uni.uploadFile({
+        url: '/member/profile/avatar',
+        name: 'file',
+        fileType: 'image',
+        filePath: tempFilePath,
+        success: ({ data, statusCode }) => {
+          if (statusCode === 200) {
+            const avatar = JSON.parse(data).result.avatar
+            profile.value!.avatar = avatar
+            uni.showToast({ icon: 'success', title: 'renew success' })
+          } else {
+            uni.showToast({ icon: 'error', title: 'update failed' })
+          }
+        },
+        fail: (error) => {
+          console.log('🚀 ~ changeAvatar ~ error:', error)
+        },
+      })
+    },
+  })
+}
 </script>
 
 <template>
@@ -15,7 +55,7 @@ const profile = ref()
     </view>
     <!-- 头像 -->
     <view class="avatar">
-      <view class="avatar-content">
+      <view class="avatar-content" @tap="changeAvatar">
         <image class="image" :src="profile?.avatar" mode="aspectFill" />
         <text class="text">点击修改头像</text>
       </view>
